@@ -29,32 +29,33 @@ void print_error(const std::string& msg)
 // will only print a single line
 void print_entity(std::ostream& out, const cppast::cpp_entity& e)
 {
+    out << cppast::to_string(e.kind()) << ",";
+
     // print name and the kind of the entity
     if (!e.name().empty())
         out << e.name();
     else
         out << "<anonymous>";
-    out << " (" << cppast::to_string(e.kind()) << ")";
 
     // print whether or not it is a definition
     if (cppast::is_definition(e))
-        out << " [definition]";
+        out << ",definition";
 
     // print number of attributes
     if (!e.attributes().empty())
-        out << " [" << e.attributes().size() << " attribute(s)]";
+        out << ",attributes=" << e.attributes().size() << ",";
 
     if (e.kind() == cppast::cpp_entity_kind::language_linkage_t)
         // no need to print additional information for language linkages
-        out << '\n';
+        out << ":\n";
     else if (e.kind() == cppast::cpp_entity_kind::namespace_t)
     {
         // cast to cpp_namespace
         auto& ns = static_cast<const cppast::cpp_namespace&>(e);
         // print whether or not it is inline
         if (ns.is_inline())
-            out << " [inline]";
-        out << '\n';
+            out << ",inline";
+        out << ":\n";
     }
     else
     {
@@ -119,7 +120,7 @@ void print_entity(std::ostream& out, const cppast::cpp_entity& e)
 
         } generator(e);
         // print generated code
-        out << ": `" << generator.str() << '`' << '\n';
+        out << ": \"" << generator.str() << '\"' << '\n';
     }
 }
 
@@ -127,7 +128,7 @@ void print_entity(std::ostream& out, const cppast::cpp_entity& e)
 void print_ast(std::ostream& out, const cppast::cpp_file& file)
 {
     // print file name
-    out << "AST for '" << file.name() << "':\n";
+    out << "file,'" << file.name() << "':\n";
     std::string prefix; // the current prefix string
     // recursively visit file and all children
     cppast::visit(file, [&](const cppast::cpp_entity& e, cppast::visitor_info info) {
@@ -152,13 +153,13 @@ void print_ast(std::ostream& out, const cppast::cpp_file& file)
             {
                 if (info.event == cppast::visitor_info::container_entity_enter)
                     prefix += "  ";
-                out << "+-";
+                out << "  ";
             }
             else
             {
                 if (info.event == cppast::visitor_info::container_entity_enter)
-                    prefix += "| ";
-                out << "|-";
+                    prefix += "  ";
+                out << "  ";
             }
 
             print_entity(out, e);
