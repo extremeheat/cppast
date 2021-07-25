@@ -67,6 +67,14 @@ jobs:
     - name: Build
       working-directory: build/
       run: cmake --build .
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist-linux
+        path: |
+          build/*      
+
     - name: Test
       working-directory: build/
       run: ctest --output-on-failure
@@ -87,6 +95,14 @@ jobs:
     - name: Build
       working-directory: build/
       run: cmake --build .
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist-macos
+        path: |
+          build/*
+
     - name: Test
       working-directory: build/
       run: ctest --output-on-failure
