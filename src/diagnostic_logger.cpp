@@ -32,9 +32,9 @@ bool stderr_diagnostic_logger::do_log(const char* source, const diagnostic& d) c
 {
     auto loc = d.location.to_string();
     if (loc.empty())
-        std::fprintf(stderr, "[%s] [%s] %s\n", source, to_string(d.severity), d.message.c_str());
+        std::fprintf(stderr, "# [%s] [%s] %s\n", source, to_string(d.severity), d.message.c_str());
     else
-        std::fprintf(stderr, "[%s] [%s] %s %s\n", source, to_string(d.severity),
+        std::fprintf(stderr, "# [%s] [%s] %s %s\n", source, to_string(d.severity),
                      d.location.to_string().c_str(), d.message.c_str());
     return true;
 }
